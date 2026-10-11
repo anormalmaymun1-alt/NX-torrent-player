@@ -48,6 +48,26 @@ install_all() {
     dkp-pacman -U --noconfirm --needed "${files[@]}"
 }
 
+# GitHub's /archive/ tarballs (mpv, libuam) can be refused by proxies that still
+# allow git. In that case the tarball is rebuilt from a shallow clone:
+# `git archive | gzip -n` reproduces GitHub's file byte for byte, and makepkg
+# still checks it against the PKGBUILD's sha256.
+prefetch_github() {
+    local dir=$1 file=$2 repo=$3 ref=$4 prefix=$5
+    local dest="$WORK_DIR/$dir/$file"
+    [[ -f "$dest" ]] && return 0
+    if curl -fsSL -o "$dest" "https://github.com/$repo/archive/$ref.tar.gz"; then
+        return 0
+    fi
+    echo "==> archive download refused, rebuilding $file from git"
+    rm -f "$dest"
+    local tmp
+    tmp=$(mktemp -d)
+    git -c advice.detachedHead=false clone -q --depth 1 -b "$ref" "https://github.com/$repo.git" "$tmp/repo"
+    git -C "$tmp/repo" archive --format=tar --prefix="$prefix/" HEAD | gzip -n > "$dest"
+    rm -rf "$tmp"
+}
+
 makepkg_as_builder() {
     local pkg=$1 flags=$2
     echo "==> building $pkg ($flags)"
@@ -62,6 +82,8 @@ build_all() {
     for pkg in "${STAGE1[@]}" "${STAGE2[@]}"; do
         cp -r "$ROOT/scripts/switch/$pkg" "$WORK_DIR/"
     done
+    prefetch_github mpv libmpv-0.36.0.tar.gz mpv-player/mpv v0.36.0 mpv-0.36.0
+    prefetch_github libuam libuam-master.tar.gz averne/libuam master libuam-master
     chown -R "$BUILDER:$BUILDER" "$WORK_DIR"
 
     remove_stock_mpv

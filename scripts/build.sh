@@ -13,6 +13,9 @@
 #   CMAKE_ARGS     extra configure options
 #   EXTRA_CA_CERT  a PEM file to trust inside the container (an HTTPS proxy's CA)
 #   DOCKER_ARGS    extra `docker run` options (e.g. --network host)
+#   DOCKERHUB_USER, DOCKERHUB_TOKEN
+#                  log in to Docker Hub before pulling the base image (anonymous
+#                  pulls are rate-limited per IP)
 # http_proxy / https_proxy / no_proxy are passed through when set.
 set -euo pipefail
 
@@ -22,6 +25,9 @@ PROJECT="$(sed -n 's/^project(\([A-Za-z0-9_-]*\).*/\1/p' "$ROOT/CMakeLists.txt" 
 TARGET="${TARGET:-$PROJECT.nro}"
 CMAKE_ARGS="${CMAKE_ARGS:-}"
 
+if [[ -n "${DOCKERHUB_USER:-}" && -n "${DOCKERHUB_TOKEN:-}" ]]; then
+    printf '%s' "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USER" --password-stdin >/dev/null
+fi
 docker build -t "$IMAGE" "$ROOT/scripts/docker"
 
 # shellcheck disable=SC2206 # DOCKER_ARGS is split on purpose
