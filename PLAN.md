@@ -257,9 +257,16 @@ konumu/boyutu, RAM modu, 4K filtresi), applet uyarısı, yeniden adlandırma ve
 marka temizliği, GA kaldırma (Aşama 1–2'de erken yapılabilir), lisans ekranı +
 `NOTICE`/`THIRD_PARTY_LICENSES.md`, `CLAUDE.md`/README güncellemesi.
 
-## 11. Onayınızı bekleyen noktalar
+## 11. Onaylanan kararlar (Aşama 0 sonrası)
 
-1. R2: önbellek varsayılanının **SD** olması (NXTP yazarının RAM önerisine rağmen).
-2. Applet modunda NXTP gibi tamamen bloklamak yerine **uyarı + yalnızca HTTP**.
-3. Aşama 1'de NXTP dosyalarının geçici olarak `legacy/nxtp/` altına taşınması.
-4. QR/link ile girişin Aşama 4'e eklenmesi.
+| Konu | Karar |
+|---|---|
+| Önbellek | Varsayılan **SD** (parçalı, FAT32 uyumlu). RAM akış modu ayarlardan açılır |
+| Applet modu | **Uyarı + yalnızca HTTP**. Torrent kaynakları "tam RAM gerekli" diye kilitlenir |
+| NXTP dosyaları | Aşama 1'de geçici olarak `legacy/nxtp/` altına taşınır |
+| İndirilemeyen portlib kaynağı | Aynı ana sürümün en yakın yama sürümüne geçilir, raporda belirtilir |
+| v0.1 kapsamı | E-posta/şifre girişi + **QR/link girişi** + **yerel torrent/magnet sekmesi**. Jellyfin kodu silinmez. Türkçe çeviri yok |
+| İkon | Kodla üretilmiş sade 256x256 ikon (dalga motifi + "Akıntio") |
+| Addon kaynağı | Giriş yapılmışsa hesap addon'ları + `sdmc:/switch/akintio-addon.txt` birleştirilir. Giriş yoksa yalnızca dosya |
+| 4K | Varsayılan gizli, ayardan açılır |
+| Teslim | Dala push + .nro dosyası + main'e PR (birleştirmeyi kullanıcı yapar) |
