@@ -12,7 +12,7 @@
 #   TARGET         make target (default: <project>.nro, read from CMakeLists.txt)
 #   CMAKE_ARGS     extra configure options
 #   EXTRA_CA_CERT  a PEM file to trust inside the container (an HTTPS proxy's CA)
-#   DOCKER_ARGS    extra `docker run` options (e.g. --network host)
+#   DOCKER_ARGS    extra `docker build` / `docker run` options (e.g. --network host)
 #   DOCKERHUB_USER, DOCKERHUB_TOKEN
 #                  log in to Docker Hub before pulling the base image (anonymous
 #                  pulls are rate-limited per IP)
@@ -28,9 +28,14 @@ CMAKE_ARGS="${CMAKE_ARGS:-}"
 if [[ -n "${DOCKERHUB_USER:-}" && -n "${DOCKERHUB_TOKEN:-}" ]]; then
     printf '%s' "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USER" --password-stdin >/dev/null
 fi
-docker build -t "$IMAGE" "$ROOT/scripts/docker"
-
 # shellcheck disable=SC2206 # DOCKER_ARGS is split on purpose
+build=(docker build -t "$IMAGE" ${DOCKER_ARGS:-})
+for v in http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY; do
+    if [[ -n "${!v:-}" ]]; then build+=(--build-arg "$v=${!v}"); fi
+done
+"${build[@]}" "$ROOT/scripts/docker"
+
+# shellcheck disable=SC2206
 run=(docker run --rm -v "$ROOT":/project -w /project ${DOCKER_ARGS:-})
 for v in http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY; do
     if [[ -n "${!v:-}" ]]; then run+=(-e "$v=${!v}"); fi
