@@ -1,6 +1,6 @@
-# Akıntı: StreamFin + NX Torrent Player birleşimi, Aşama 0 inceleme ve yol haritası
+# Akıntio: StreamFin + NX Torrent Player birleşimi, Aşama 0 inceleme ve yol haritası
 
-**Akıntı** (dosya/yol adı: `Akinti`): Stremio addon protokolüyle çalışan,
+**Akıntio** (dosya/yol adı: `Akintio`): Stremio addon protokolüyle çalışan,
 hesap senkronizasyonlu ve torrent motorlu bir Nintendo Switch homebrew istemcisi.
 Uygulama içinde "Stremio" adı ve logosu kullanılmayacak.
 
@@ -11,7 +11,7 @@ Uygulama içinde "Stremio" adı ve logosu kullanılmayacak.
 | Ana proje | StreamFin (borealis + MPVCore + addon protokolü) |
 | Repo | Bu repo (`anormalmaymun1-alt/NX-torrent-player`). StreamFin geçmişi `git merge --allow-unrelated-histories` ile alınır; iki projenin geçmişi ve atıfları korunur |
 | Portlibs | StreamFin'in `scripts/switch/*/PKGBUILD` dosyalarından **kendimiz derleyeceğiz** (Docker içinde) |
-| İsim | **Akıntı** / `Akinti` |
+| İsim | **Akıntio** / `Akintio` |
 | mpv besleme | `mpv_stream_cb` (`torrent://` protokolü), yerel HTTP sunucusu değil (gerekçe §5) |
 
 ## 1. Kaynaklar ve doğrulama
@@ -130,7 +130,7 @@ mpv'ye doğrudan verilir.
 
 ## 6. Dosya bazında taşıma listesi
 
-### NXTP'den Akıntı'ya
+### NXTP'den Akıntio'ya
 
 | Kaynak (NXTP) | Hedef | Nasıl |
 |---|---|---|
@@ -166,10 +166,10 @@ düşünülebilir), yerel torrent/magnet sekmesi (opsiyonel, Aşama 4 sonrası),
   kütüphanesiyle senkronize olur, yoksa bugünkü yerel davranış sürer.
 - `app/src/api/analytics.cpp` + çağrı yerleri: **Google Analytics tamamen
   devre dışı** (Switchfin'in GA anahtarına veri gidiyor).
-- `CMakeLists.txt`: proje adı `Akinti`, NACP başlığı "Akıntı", yeni Title ID,
+- `CMakeLists.txt`: proje adı `Akintio`, NACP başlığı "Akıntio", yeni Title ID,
   `engine/` kaynakları + `-DPOSIX`, mbedtls bağlantısı, romfs'e `cacert.pem`.
 - Marka: UI metinlerinden "Stremio" ve "StreamFin" kaldırılır. Yollar
-  `sdmc:/switch/Akinti/` ve `sdmc:/config/Akinti/` olur.
+  `sdmc:/switch/Akintio/` ve `sdmc:/config/Akintio/` olur.
 - Jellyfin'e özgü kod (sunucu listesi, webdav, danmaku…) ilk aşamalarda
   **silinmez** (riskli ve gereksiz). Temizlik ayrı bir aşamada yapılır.
 
@@ -217,7 +217,7 @@ düşünülebilir), yerel torrent/magnet sekmesi (opsiyonel, Aşama 4 sonrası),
 - Şifre yalnızca RAM'de tutulur ve login isteğinden hemen sonra silinir. Diske,
   loga ya da yapılandırma dosyasına yazılmaz. HTTP loglarında istek gövdeleri
   yazdırılmaz.
-- authKey `sdmc:/switch/Akinti/auth.key` dosyasında saklanır. Çıkışta önce
+- authKey `sdmc:/switch/Akintio/auth.key` dosyasında saklanır. Çıkışta önce
   `logout` API'si çağrılır (anahtar sunucuda geçersiz olur), sonra dosya silinir.
   Ağ yoksa dosya yine silinir.
 - E-posta, hesap ekranında göstermek için ayrı dosyada tutulur (NXTP gibi).
